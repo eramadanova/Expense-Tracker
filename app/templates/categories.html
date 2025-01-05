@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% import 'macros.html' as macros %}
+
+{% block title %}Categories{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Categories</h2>
+    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addCategoryModal">Add Category</button>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <h3>Expense</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in expense_categories %}
+                <tr>
+                    <td>{{ category.name }}</td>
+                    <td>
+                        {{ macros.category_actions(category) }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-6">
+        <h3>Income</h3>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for category in income_categories %}
+                <tr>
+                    <td>{{ category.name }}</td>
+                    <td>
+                        {{ macros.category_actions(category) }}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Category Modal -->
+<div class="modal fade" id="addCategoryModal" tabindex="-1" aria-labelledby="addCategoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addCategoryModalLabel">Add Category</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form action="/categories_add" method="POST">
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="categoryType" class="form-label">Type</label>
+                        <select class="form-select" id="categoryType" name="categoryType" required>
+                            <option value="expense">Expense</option>
+                            <option value="income">Income</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="categoryName" class="form-label">Name</label>
+                        <input type="text" class="form-control" id="categoryName" name="categoryName" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Add Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

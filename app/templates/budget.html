@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Budget{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center">
+    <div class="card w-50 mt-3">
+        <div class="card-header bg-dark text-white text-center">
+            <h4>Manage Your Budget</h4>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="/budget">
+                <div class="mb-3">
+                    <label for="totalBudget" class="form-label">Total Budget</label>
+                    <input type="number" class="form-control form-control-sm" id="totalBudget" name="total_budget" placeholder="Enter amount" required>
+                </div>
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="byCategory" name="by_category" onchange="toggleCategoryList()">
+                    <label class="form-check-label" for="byCategory">
+                        By Category
+                    </label>
+                </div>
+                <div id="categoryList" class="mb-3" style="display: none;">
+                    <label for="categorySelect" class="form-label">Select Category</label>
+                    <select class="form-select form-select-sm" id="categorySelect" name="category">
+                        <option value="">-- Select a Category --</option>
+                        {% for category in categories %}
+                            <option value="{{ category.id }}">{{ category.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-sm">Set Budget</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    function toggleCategoryList() {
+        const checkbox = document.getElementById('byCategory');
+        const categoryList = document.getElementById('categoryList');
+        categoryList.style.display = checkbox.checked ? 'block' : 'none';
+    }
+</script>
+{% endblock %}

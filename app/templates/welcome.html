@@ -1,0 +1,17 @@
+{% extends 'base.html'%}
+
+{% block title%}Welcome{% endblock %}
+
+{% block content %}
+<div style="text-align: center;">
+    <h1>Welcome to the Expense Tracker!</h1>
+    <h3 style="color:dimgray;">Here you can manage your expenses and incomes.</h3>
+</div>
+
+<div style="display: flex; justify-content: center; align-items: center; height: 70vh;">
+    <img src="{{ url_for('static', filename='images/budget.jpg') }}" alt="budget photo" style="width:650px; height:auto;">
+</div>
+
+{% endblock %}
+
+
