@@ -11,18 +11,18 @@
         <div class="card-body">
             <form method="POST" action="/budget">
                 <div class="mb-3">
-                    <label for="totalBudget" class="form-label">Total Budget</label>
-                    <input type="number" class="form-control form-control-sm" id="totalBudget" name="total_budget" placeholder="Enter amount" required>
+                    <label for="total_budget" class="form-label">Total Budget</label>
+                    <input type="number" class="form-control form-control-sm" id="total_budget" name="total_budget" placeholder="Enter amount" required>
                 </div>
                 <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="byCategory" name="by_category" onchange="toggleCategoryList()">
-                    <label class="form-check-label" for="byCategory">
+                    <input class="form-check-input" type="checkbox" id="by_category" name="by_category" onchange="toggleCategoryList()">
+                    <label class="form-check-label" for="by_category">
                         By Category
                     </label>
                 </div>
-                <div id="categoryList" class="mb-3" style="display: none;">
-                    <label for="categorySelect" class="form-label">Select Category</label>
-                    <select class="form-select form-select-sm" id="categorySelect" name="category">
+                <div id="category_list" class="mb-3" style="display: none;">
+                    <label for="category_select" class="form-label">Select Category</label>
+                    <select class="form-select form-select-sm" id="category_select" name="category_select">
                         <option value="">-- Select a Category --</option>
                         {% for category in categories %}
                             <option value="{{ category.id }}">{{ category.name }}</option>

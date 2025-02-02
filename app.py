@@ -1,9 +1,8 @@
 from app import create_app, db
-from app.models import Category
 
 app = create_app()
 
-# Създаване на базата данни
+# Create data base
 with app.app_context():
     db.create_all()
 

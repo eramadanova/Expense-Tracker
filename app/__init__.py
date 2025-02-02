@@ -16,7 +16,7 @@ def create_app():
     db.init_app(app)
 
     # Регистрация на blueprint-ове
-    from .routes import create_blueprints
+    from app.routes import create_blueprints
     for bp in create_blueprints():
         app.register_blueprint(bp)
 

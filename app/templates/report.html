@@ -12,7 +12,7 @@
     <div class="mt-4">
         <h5>Filter:</h5>
         <div class="mb-3">
-            <select class="form-select" id="filterType" onchange="toggleFilterFields()">
+            <select class="form-select" id="filter_type" onchange="toggleFilterFields()">
                 <option value="">-- Select Filter --</option>
                 <option value="date">Date</option>
                 <option value="amount">Amount</option>
@@ -21,27 +21,27 @@
         </div>
 
         <!-- Date Filter -->
-        <div id="dateFilterFields" class="row mb-3" style="display: none;">
+        <div id="date_filter_fields" class="row mb-3" style="display: none;">
             <div class="col-md-6">
-                <label for="fromDate" class="form-label">From</label>
+                <label for="from_date" class="form-label">From</label>
                 <input type="date" class="form-control" id="fromDate">
             </div>
             <div class="col-md-6">
-                <label for="toDate" class="form-label">To</label>
+                <label for="to_date" class="form-label">To</label>
                 <input type="date" class="form-control" id="toDate">
             </div>
         </div>
 
         <!-- Amount Filter -->
-        <div id="amountFilterField" class="mb-3" style="display: none;">
-            <label for="filterAmount" class="form-label">Amount</label>
-            <input type="number" class="form-control" id="filterAmount" placeholder="Enter amount">
+        <div id="amount_filter_field" class="mb-3" style="display: none;">
+            <label for="filter_amount" class="form-label">Amount</label>
+            <input type="number" class="form-control" id="filter_amount" placeholder="Enter amount">
         </div>
 
         <!-- Category Filter -->
-        <div id="categoryFilterField" class="mb-3" style="display: none;">
-            <label for="filterCategory" class="form-label">Select Category</label>
-            <select class="form-select" id="filterCategory">
+        <div id="category_filter_field" class="mb-3" style="display: none;">
+            <label for="filter_category" class="form-label">Select Category</label>
+            <select class="form-select" id="filter_category">
                 <option value="">-- Select a Category --</option>
                 {% for category in categories %}
                 <option value="{{ category.id }}">{{ category.name }}</option>
@@ -54,7 +54,7 @@
     </div>
 
     <!-- Filtered Results Table -->
-    <div class="table-responsive mt-4" id="filteredTable" style="display: none;">
+    <div class="table-responsive mt-4" id="filtered_table" style="display: none;">
         <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>
@@ -63,7 +63,7 @@
                     <th>Date</th>
                 </tr>
             </thead>
-            <tbody id="filteredResults">
+            <tbody id="filtered_results">
                 <!-- Filtered results will be inserted here -->
             </tbody>
         </table>
@@ -74,16 +74,16 @@
         <h5>Export Options:</h5>
         <div class="row">
             <div class="col-md-6">
-                <label for="exportType" class="form-label">Table</label>
-                <select class="form-select" id="exportType">
+                <label for="export_type" class="form-label">Table</label>
+                <select class="form-select" id="export_type">
                     <option value="none">None</option>
                     <option value="pdf">PDF</option>
                     <option value="csv">CSV</option>
                 </select>
             </div>
             <div class="col-md-6">
-                <label for="chartType" class="form-label">Chart</label>
-                <select class="form-select" id="chartType">
+                <label for="chart_type" class="form-label">Chart</label>
+                <select class="form-select" id="chart_type">
                     <option value="none">None</option>
                     <option value="pie">Pie Chart</option>
                 </select>
