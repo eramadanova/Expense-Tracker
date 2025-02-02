@@ -3,6 +3,8 @@ from flask_sqlalchemy import SQLAlchemy
 
 db = SQLAlchemy()
 
+
+
 def create_app():
     app = Flask(__name__)
     app.config['SECRET_KEY'] = 'asdfvm kfkmvkemd n'
@@ -15,8 +17,8 @@ def create_app():
     # Инициализиране на разширенията
     db.init_app(app)
 
-    # Регистрация на blueprint-ове
     from app.routes import create_blueprints
+    # Регистрация на blueprint-ове
     for bp in create_blueprints():
         app.register_blueprint(bp)
 

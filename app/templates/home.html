@@ -18,6 +18,38 @@
 </div>
 <br/>
 
+<!-- Add Buttons -->
+<div class="d-flex mt-4 justify-content-between">
+    <button class="btn btn-primary" id="import_csv" data-bs-toggle="modal" data-bs-target="#import_csv_modal">Import from CSV</button>
+    <!-- Import CSV Modal -->
+    <div class="modal fade" id="import_csv_modal" tabindex="-1" aria-labelledby="import_csv_modal_label" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="import_csv_modal_label">Import Transactions from CSV</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form method="POST" action="/home-import" enctype="multipart/form-data">
+                    <div class="modal-body">
+                        <label for="csv_file" class="form-label">Choose CSV file</label>
+                        <input type="file" class="form-control" name="csv_file" id="csv_file" accept=".csv" required>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Import</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <div>
+        <button class="btn btn-success me-2" id="add_income" data-bs-toggle="modal" data-bs-target="#add_transaction_modal_income">Add Income</button>
+        <button class="btn btn-danger" id="add_expense" data-bs-toggle="modal" data-bs-target="#add_transaction_modal_expense">Add Expense</button>
+    </div>
+</div>
+<br/>
 
 <!-- Transactions Table -->
 <div class="table-responsive">
@@ -48,15 +80,15 @@
     </table>
 </div>
 
-<!-- Add Buttons -->
-<div class="d-flex justify-content-end mt-4">
-    <button class="btn btn-success me-2" id="add_income" data-bs-toggle="modal" data-bs-target="#add_transaction_modal_income">Add Income</button>
-    <button class="btn btn-danger" id="add_expense" data-bs-toggle="modal" data-bs-target="#add_transaction_modal_expense">Add Expense</button>
-</div>
+
+
+
 </div>
 
-<!-- Modal for Adding Transaction --> 
+<!-- Modal for Adding Transaction -->
 {{ macros.home_actions("expense", categories, date) }}
 {{ macros.home_actions("income", categories, date) }}
+
+
 
 {% endblock %}

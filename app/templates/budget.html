@@ -9,39 +9,34 @@
             <h4>Manage Your Budget</h4>
         </div>
         <div class="card-body">
-            <form method="POST" action="/budget">
+            <form action="/budget" method="GET">
                 <div class="mb-3">
                     <label for="total_budget" class="form-label">Total Budget</label>
-                    <input type="number" class="form-control form-control-sm" id="total_budget" name="total_budget" placeholder="Enter amount" required>
+                    <input type="number" class="form-control form-control-sm" name="total_budget" placeholder="Enter amount" required>
                 </div>
                 <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" id="by_category" name="by_category" onchange="toggleCategoryList()">
-                    <label class="form-check-label" for="by_category">
-                        By Category
-                    </label>
+                    <input class="form-check-input" type="checkbox" name="by_category"
+                        onchange="this.form.submit()" {% if request.args.get('by_category') %}checked{% endif %}>
+                    <label class="form-check-label">By Category</label>
                 </div>
-                <div id="category_list" class="mb-3" style="display: none;">
+
+                {% if request.args.get('by_category') %}
+                <div>
                     <label for="category_select" class="form-label">Select Category</label>
-                    <select class="form-select form-select-sm" id="category_select" name="category_select">
+                    <select class="form-select form-select-sm" name="category_select">
                         <option value="">-- Select a Category --</option>
                         {% for category in categories %}
                             <option value="{{ category.id }}">{{ category.name }}</option>
                         {% endfor %}
                     </select>
                 </div>
-                <div class="text-center">
+                {% endif %}
+
+                <div class="text-center mt-3">
                     <button type="submit" class="btn btn-primary btn-sm">Set Budget</button>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
-<script>
-    function toggleCategoryList() {
-        const checkbox = document.getElementById('byCategory');
-        const categoryList = document.getElementById('categoryList');
-        categoryList.style.display = checkbox.checked ? 'block' : 'none';
-    }
-</script>
 {% endblock %}

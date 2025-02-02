@@ -35,7 +35,6 @@ def categories_add():
         existing_category = db.session.execute(
             db.select(Category).filter_by(name=name, category_type=category_type)
             ).scalar_one_or_none()
-        
         if existing_category:
             #flash("Category already exists.", "error")
             return redirect(url_for('categories.categories'))

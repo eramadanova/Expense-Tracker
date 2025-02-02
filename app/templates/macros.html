@@ -3,9 +3,9 @@
     <!-- Update Button -->
     <form action="/categories-update" method="POST">
         <input type="hidden" name="category_id" value="{{ category.id }}">
-        <button 
-            class="btn btn-warning btn-sm" 
-            data-bs-toggle="modal" 
+        <button
+            class="btn btn-warning btn-sm"
+            data-bs-toggle="modal"
             data-bs-target="#update_category_modal_{{ category.id }}"
             type="button">
             Update
@@ -36,9 +36,9 @@
     <!-- Delete Button -->
     <form action="/categories-delete" method="POST">
         <input type="hidden" name="category_id" value="{{ category.id }}">
-        <button 
-            class="btn btn-danger btn-sm" 
-            data-bs-toggle="modal" 
+        <button
+            class="btn btn-danger btn-sm"
+            data-bs-toggle="modal"
             data-bs-target="#delete_category_modal_{{ category.id }}"
             type="button">
             Delete
@@ -134,13 +134,13 @@
 {% macro home_update(transaction, categories) %}
 <div class="d-inline-flex gap-2">
     <!-- Update Button -->
-    <button 
-        class="btn btn-warning btn-sm" 
-        data-bs-toggle="modal" 
+    <button
+        class="btn btn-warning btn-sm"
+        data-bs-toggle="modal"
         data-bs-target="#update_transaction_modal_{{ transaction.id }}">
         Update
     </button>
-    
+
     <!-- Update Modal -->
     <form action="/home-update" method="POST">
         <input type="hidden" name="transaction_id" value="{{ transaction.id }}">
@@ -161,7 +161,7 @@
                             <select class="form-select" id="transaction_category_{{ transaction.id }}" name="transaction_category">
                                 {% for category in categories %}
                                     {% if category.category_type == transaction.category.category_type %}
-                                        <option value="{{ category.id }}" 
+                                        <option value="{{ category.id }}"
                                             {% if category.id == transaction.category.id %} selected {% endif %}>
                                             {{ category.name }}
                                         </option>
@@ -196,9 +196,9 @@
 {% macro home_delete(transaction) %}
 <div class="d-inline-flex gap-2">
     <!-- Delete Button -->
-    <button 
-    class="btn btn-danger btn-sm" 
-    data-bs-toggle="modal" 
+    <button
+    class="btn btn-danger btn-sm"
+    data-bs-toggle="modal"
     data-bs-target="#delete_transaction_modal_{{ transaction.id }}">
     Delete
     </button>
