@@ -6,7 +6,7 @@
 <div class="container mt-4">
     <h2>Settings</h2>
 
-    <form method="POST">
+    <form method="POST" action="/settings-save">
         <div class="mt-4">
             <label for="default_currency" class="form-label">Default Currency</label>
             <select class="form-select" name="default_currency">
@@ -14,10 +14,9 @@
                 <option value="{{ currency }}" {% if currency == default_currency %}selected{% endif %}>{{ currency }}</option>
                 {% endfor %}
             </select>
-        </div>
-
-        <div class="text-center mt-4">
-            <button type="submit" class="btn btn-primary">Save Settings</button>
+            <div class="text-center mt-4">
+                <button type="submit" class="btn btn-primary">Save Settings</button>
+            </div>
         </div>
     </form>
 </div>

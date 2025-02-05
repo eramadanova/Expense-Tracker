@@ -7,13 +7,13 @@
 <!-- Balance Overview -->
 <div class="row">
     <div class="col-md-4 text-center">
-        <h4 class="text-success">Income: <span id="income">{{ income }}</span></h4>
+        <h4 class="text-success">Income: <span id="income">{{ "%.2f"|format(income) }}</span></h4>
     </div>
     <div class="col-md-4 text-center">
-        <h4 class="text-danger">Expense: <span id="expense">{{ expense }}</span></h4>
+        <h4 class="text-danger">Expense: <span id="expense">{{ "%.2f"|format(expense) }}</span></h4>
     </div>
     <div class="col-md-4 text-center">
-        <h4>Balance: <span id="balance">{{ income - expense }}</span></h4>
+        <h4>Balance: <span id="balance">{{ "%.2f"|format(income - expense) }}</span></h4>
     </div>
 </div>
 <br/>
@@ -69,9 +69,9 @@
                 <td>{{ transaction.date }}</td>
                 <td>{{ transaction.category.name }}</td>
                 <td>{{ transaction.description }}</td>
-                <td>{{ transaction.amount }}</td>
+                <td>{{ "%.2f"|format(transaction.amount) }} {{ default_currency }}</td>
                 <td>
-                    {{ macros.home_update(transaction, categories) }}
+                    {{ macros.home_update(transaction, categories, default_currency, currency_codes) }}
                     {{ macros.home_delete(transaction) }}
                 </td>
             </tr>
@@ -86,8 +86,8 @@
 </div>
 
 <!-- Modal for Adding Transaction -->
-{{ macros.home_actions("expense", categories, date) }}
-{{ macros.home_actions("income", categories, date) }}
+{{ macros.home_actions("expense", categories, date, default_currency, currency_codes) }}
+{{ macros.home_actions("income", categories, date, default_currency, currency_codes) }}
 
 
 

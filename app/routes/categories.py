@@ -1,5 +1,5 @@
 from flask import render_template, Blueprint, request, flash, redirect, url_for
-from ..models import Category, Transaction
+from ..models import Category, Transaction, Budget
 from .. import db
 
 categories_bp = Blueprint('categories', __name__)
@@ -96,6 +96,7 @@ def categories_delete():
 
         # Delete category
         db.session.query(Transaction).filter_by(category_id=category_id).delete()
+        db.session.query(Budget).filter_by(category_id=category_id).delete()
         db.session.delete(category)
         db.session.commit()
         flash("Category deleted successfully!", "success")

@@ -9,21 +9,21 @@
             <h4>Manage Your Budget</h4>
         </div>
         <div class="card-body">
+            <!-- Форма за избор дали да се показва падащото меню -->
             <form action="/budget" method="GET">
-                <div class="mb-3">
-                    <label for="total_budget" class="form-label">Total Budget</label>
-                    <input type="number" class="form-control form-control-sm" name="total_budget" placeholder="Enter amount" required>
-                </div>
                 <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox" name="by_category"
-                        onchange="this.form.submit()" {% if request.args.get('by_category') %}checked{% endif %}>
-                    <label class="form-check-label">By Category</label>
+                    <input class="form-check-input" type="checkbox" name="by_category" id="by_category"
+                        value="1" {% if request.args.get('by_category') %}checked{% endif %}
+                        onchange="this.form.submit()">
+                    <label class="form-check-label" for="by_category">By Category</label>
                 </div>
-
+            </form>
+            <!-- Форма за задаване на бюджет -->
+            <form action="/budget-set" method="POST" class="mt-3">
                 {% if request.args.get('by_category') %}
-                <div>
+                <div class="mb-3">
                     <label for="category_select" class="form-label">Select Category</label>
-                    <select class="form-select form-select-sm" name="category_select">
+                    <select class="form-select form-select-sm" name="category_select" required>
                         <option value="">-- Select a Category --</option>
                         {% for category in categories %}
                             <option value="{{ category.id }}">{{ category.name }}</option>
@@ -31,11 +31,17 @@
                     </select>
                 </div>
                 {% endif %}
-
+                <div class="mb-3">
+                    <label for="total_budget" class="form-label">Total Budget</label>
+                    <input type="number" class="form-control form-control-sm" name="total_budget"
+                        placeholder="Enter amount" required>
+                </div>
                 <div class="text-center mt-3">
                     <button type="submit" class="btn btn-primary btn-sm">Set Budget</button>
                 </div>
             </form>
+
+
         </div>
     </div>
 </div>

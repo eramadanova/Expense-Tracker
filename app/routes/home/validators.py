@@ -2,10 +2,10 @@ from datetime import datetime
 import pandas as pd
 from app import db
 from ...models import Category, Transaction
+from utils import get_currency_codes, get_exchange_rate
+import config
 
-def is_valid(transaction_category, transaction_amount, transaction_currency):
-    #check if currency is equal to default currency -> if not use API to convert it to database
-
+def is_valid(transaction_category, transaction_amount):
     if transaction_category is None:
         #flash
         return False
@@ -35,7 +35,7 @@ def validate_columns(df):
         print("CSV file is empty!")
         return False
 
-    required_columns = {'date', 'category', 'description', 'amount'}
+    required_columns = {'date', 'category', 'description', 'amount', 'currency'}
     if not required_columns.issubset(df.columns):
         #flash(f"Invalid CSV format! Expected columns: {', '.join(required_columns)}", "error")
         print(f"Invalid CSV format! Expected columns: {', '.join(required_columns)}")
@@ -44,10 +44,11 @@ def validate_columns(df):
     return True
 
 def process_transaction(row, index):
-    category_name = row.get('category')
+    category_name = row.get('category').strip()
     description = row.get('description')
     amount = row.get('amount')
     date_str = str(row.get('date')).strip()
+    currency = row.get('currency').strip()
 
     category = db.session.execute(
         db.select(Category).filter_by(name=category_name)
@@ -60,15 +61,17 @@ def process_transaction(row, index):
 
     description = '' if pd.isna(description) or description is None else str(description).strip()
 
-    if not validate_amount(amount, index):
+    if not is_valid_amount(amount, index):
         return None
 
     amount = float(amount)
 
-    if not validate_date(date_str, index):
+    if not is_valid_date(date_str, index):
         return None
 
     date_obj = datetime.strptime(date_str, "%Y-%m-%d")
+
+    amount = validate_currency(currency, amount)
 
     return Transaction(
         category_id=category.id,
@@ -77,7 +80,7 @@ def process_transaction(row, index):
         date=date_obj.strftime("%Y-%m-%d"))
 
 
-def validate_amount(amount, i):
+def is_valid_amount(amount, i):
     if pd.isna(amount) or amount == '' or amount is None:
         #flash(f"Invalid amount on row {i+1}", "error")
         print(f"Invalid amount on row {i+1}")
@@ -97,7 +100,7 @@ def validate_amount(amount, i):
     return True
 
 
-def validate_date(date_str, i):
+def is_valid_date(date_str, i):
     try:
         datetime.strptime(date_str, "%Y-%m-%d")
     except ValueError:
@@ -106,3 +109,13 @@ def validate_date(date_str, i):
         return False
 
     return True
+
+def validate_currency(currency, amount):
+    currency_codes = get_currency_codes()
+    if currency not in currency_codes:
+        currency = 'BGN'
+    elif currency != config.default_currency:
+        exchange_rate = get_exchange_rate(currency, config.default_currency)
+        amount *= exchange_rate
+
+    return amount
