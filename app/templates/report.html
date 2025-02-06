@@ -3,12 +3,14 @@
 {% block title %}Report{% endblock %}
 
 {% block content %}
+
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h2>Report</h2>
 </div>
 
 <div class="container mt-4">
-    <!-- Филтриране -->
+
+    <!-- Форма за избор на тип филтър -->
     <form action="/report" method="GET">
         <label for="filter_type" class="form-label">Filter:</label>
         <select class="form-select" name="filter_type" onchange="this.form.submit()">
@@ -18,7 +20,10 @@
             <option value="category" {% if request.args.get('filter_type') == 'category' %}selected{% endif %}>Category</option>
         </select>
     </form>
+
     <br/>
+
+    <!-- Форма за въвеждане на критерии за филтриране -->
     <form action="/report" method="GET">
         <input type="hidden" name="filter_type" value="{{ request.args.get('filter_type') }}">
 
@@ -40,7 +45,9 @@
             <select name="filter_category">
                 <option value="">-- Select a Category --</option>
                 {% for category in categories %}
-                    <option value="{{ category.id }}" {% if request.args.get('filter_category') == category.id|string %}selected{% endif %}>{{ category.name }}</option>
+                <option value="{{ category.id }}" {% if request.args.get('filter_category') == category.id|string %}selected{% endif %}>
+                    {{ category.name }}
+                </option>
                 {% endfor %}
             </select>
         </div>
@@ -49,51 +56,68 @@
         <button type="submit" class="btn btn-primary mt-3">Apply Filter</button>
     </form>
 
-    <!-- Таблица с резултати
+    <!-- Таблица с резултати -->
     <div class="table-responsive mt-4">
         <table class="table table-bordered">
             <thead class="table-dark">
                 <tr>
-                    <th>Category</th>
-                    <th>Amount</th>
                     <th>Date</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Amount</th>
                 </tr>
             </thead>
             <tbody>
-                {% for transaction in transactions %}
+                {% for transaction in filtered_transactions %}
                 <tr>
-                    <td>{{ transaction.category.name }}</td>
-                    <td>{{ transaction.amount }}</td>
                     <td>{{ transaction.date }}</td>
+                    <td>{{ transaction.category.name }}</td>
+                    <td>{{ transaction.description }}</td>
+                    <td>{{ "%.2f"|format(transaction.amount) }} {{ default_currency }}</td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
-    </div> -->
+    </div>
 
     <!-- Опции за експортиране -->
     <div class="mt-4">
         <h5>Export Options:</h5>
-        <form action="/report" method="POST"> <!-- report.export е май-->
-            <div class="row">
-                <div class="col-md-6">
-                    <label for="export_type" class="form-label">Table</label>
-                    <select class="form-select" name="export_type">
-                        <option value="none">None</option>
-                        <option value="pdf">PDF</option>
-                        <option value="csv">CSV</option>
-                    </select>
-                </div>
-                <div class="col-md-6">
-                    <label for="chart_type" class="form-label">Chart</label>
-                    <select class="form-select" name="chart_type">
-                        <option value="none">None</option>
-                        <option value="pie">Pie Chart</option>
-                    </select>
-                </div>
+        <form action="/report-table" method="POST">
+            <input type="hidden" name="filtered_transaction_ids" value="{{ filtered_transactions | map(attribute='id') | join(',') }}">
+            <label for="export_type" class="form-label">Table</label>
+
+            <div class="d-flex justify-content-between align-items-center mb-4" style="width: 45%; gap: 10px;">
+                <select class="form-select" name="export_type">
+                    <option value="none">None</option>
+                    <option value="pdf">PDF</option>
+                    <option value="csv">CSV</option>
+                </select>
+
+                <button type="submit" class="btn btn-success" style="white-space: nowrap;">Generate Report</button>
+
             </div>
-            <button type="submit" class="btn btn-success mt-3">Generate Report</button>
+
+
         </form>
+
+        <form action="/report-chart" method="POST">
+            <input type="hidden" name="filtered_transaction_ids" value="{{ filtered_transactions | map(attribute='id') | join(',') }}">
+            <label for="chart_type" class="form-label">Chart</label>
+
+            <div class="d-flex justify-content-between align-items-center mb-4" style="width: 45%; gap: 10px;">
+
+                <select class="form-select" name="chart_type">
+                    <option value="none">None</option>
+                    <option value="pie_expense">Pie Chart Expense</option>
+                    <option value="pie_income">Pie Chart Income</option>
+                </select>
+
+                <button type="submit" class="btn btn-success" style="white-space: nowrap;">New Button</button>
+            </div>
+        </form>
+
     </div>
 </div>
+
 {% endblock %}

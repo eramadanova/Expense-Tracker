@@ -41,6 +41,40 @@
                 </div>
             </form>
 
+            <!-- Таблица за показване на зададените бюджети по категории -->
+            <div class="mt-4">
+                <h5>Current Budgets by Category</h5>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Current expense</th>
+                            <th>Total budget</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for budget in budgets %}
+                            <tr>
+                                <td>
+                                    {% if budget.category_id == 0 %}
+                                        All
+                                    {% else %}
+                                        {{ budget.category.name }}
+                                    {% endif %}
+                                </td>
+                                <td>{{ "%.2f"|format(budget.current_budget) }} {{ default_currency }}</td>
+                                <td>{{ "%.2f"|format(budget.total_budget) }} {{ default_currency }}</td>
+                                    <td class="text-center">
+                                        {% if budget.current_budget > budget.total_budget %}
+                                            <h5>⚠️</h5>
+                                        {% endif%}
+                                    </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
 
         </div>
     </div>

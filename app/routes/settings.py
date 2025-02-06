@@ -2,7 +2,7 @@ from flask import render_template, Blueprint, request, redirect, url_for
 import config
 from requests.exceptions import HTTPError
 from .. import db
-from utils import get_transactions, get_currency_codes, get_exchange_rate, save_default_currency
+from utils import get_transactions, get_currency_codes, get_exchange_rate, save_default_currency, get_budgets
 
 settings_bp = Blueprint('settings', __name__)
 
@@ -29,6 +29,12 @@ def settings_save():
         transactions = get_transactions()
         for transaction in transactions:
             transaction.amount *= exchange_rate
+
+        budgets = get_budgets()
+        for budget in budgets:
+            budget.current_budget *= exchange_rate
+            budget.total_budget *= exchange_rate
+            
         db.session.commit()
 
         return redirect(url_for('settings.settings'))

@@ -9,6 +9,9 @@ def get_transactions():
 def get_categories():
     return [el[0] for el in db.session.execute(db.select(Category))]
 
+def get_budgets():
+    return [el[0] for el in db.session.execute(db.select(Budget))]
+
 def get_categories_by_type(type):
     return [el[0] for el in db.session.execute(db.select(Category)
                                                .filter_by(category_type=type))]

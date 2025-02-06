@@ -1,14 +1,16 @@
 from flask import render_template, Blueprint, request, redirect, url_for
-from utils import get_categories_by_type, get_budget_by_category, get_transactions
+from utils import get_categories_by_type, get_budget_by_category, get_transactions, get_budgets
 from .. import db
 from app.models import Budget, Transaction
+import config
 
 budget_bp = Blueprint('budget', __name__)
 
 @budget_bp.route('/budget')
 def budget():
     categories = get_categories_by_type("expense")
-    return render_template('budget.html', categories=categories)
+    budgets = get_budgets()
+    return render_template('budget.html', categories=categories, budgets=budgets, default_currency=config.default_currency)
 
 @budget_bp.route('/budget-set', methods=['POST'])
 def budget_set():

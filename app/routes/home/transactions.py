@@ -58,7 +58,7 @@ def home_update():
         budget_category = get_budget_by_category(updated_category)
         update_budget_expense(budget_category, transaction.amount, updated_amount)
 
-        budget_all = get_budget_by_category(updated_category)
+        budget_all = get_budget_by_category(0)
         update_budget_expense(budget_all, transaction.amount, updated_amount)
 
         transaction.category_id = updated_category
