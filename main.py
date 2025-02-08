@@ -1,8 +1,14 @@
-from app import create_app, db
+"""
+Main entry point of the application.
+
+This module initializes and runs the Flask application.
+It creates the application context and sets up the database.
+"""
+
+from src import create_app, db
 
 app = create_app()
 
-# Create data base
 with app.app_context():
     db.create_all()
 
