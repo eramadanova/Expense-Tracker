@@ -4,7 +4,6 @@
 {% block title%}Home{% endblock %}
 
 {% block content %}
-<!-- Balance Overview -->
 <div class="row">
     <div class="col-md-4 text-center">
         <h4 class="text-success">Income: <span id="income">{{ "%.2f"|format(income) }}</span></h4>
@@ -18,7 +17,6 @@
 </div>
 <br/>
 
-<!-- Add Buttons -->
 <div class="d-flex mt-4 justify-content-between">
     <button class="btn btn-primary" id="import_csv" data-bs-toggle="modal" data-bs-target="#import_csv_modal">Import from CSV</button>
     <!-- Import CSV Modal -->
@@ -51,7 +49,6 @@
 </div>
 <br/>
 
-<!-- Transactions Table -->
 <div class="table-responsive">
     <table class="table table-striped">
         <thead>

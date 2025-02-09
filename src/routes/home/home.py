@@ -1,6 +1,6 @@
 """
-Routes for the home page of the application.
-Handles the homepage view and displays financial data.
+    Routes for the home page of the application.
+    Handles the homepage view and displays financial data.
 """
 
 from datetime import date

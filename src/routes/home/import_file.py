@@ -1,6 +1,6 @@
 """
-Handles importing transactions from CSV files.
-Validates file format, processes transactions and updates budgets.
+    Handles importing transactions from CSV files.
+    Validates file format, processes transactions and updates budgets.
 """
 
 import pandas as pd
@@ -42,18 +42,20 @@ def home_import() -> Response:
         if not validate_columns(df):
             return redirect(url_for('home.home'))
 
+        transactions = []
         for index, (_, row) in enumerate(df.iterrows()):
             transaction = process_transaction(row.to_dict(), index)
-            if transaction is not None:
-                budget_category = get_budget_by_category(transaction.category_id)
-                add_budget_expense(budget_category, transaction.amount)
+            if transaction is None:
+                return redirect(url_for('home.home'))
+            budget_category = get_budget_by_category(transaction.category_id)
+            add_budget_expense(budget_category, transaction.amount)
 
-                budget_all = get_budget_by_category(0)
-                add_budget_expense(budget_all, transaction.amount)
+            budget_all = get_budget_by_category(0)
+            add_budget_expense(budget_all, transaction.amount)
 
-                db.session.add(transaction)
+            transactions.append(transaction)
 
+        db.session.add_all(transactions)
         db.session.commit()
-        return redirect(url_for('home.home'))
 
     return redirect(url_for('home.home'))

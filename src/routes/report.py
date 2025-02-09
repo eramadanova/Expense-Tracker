@@ -5,12 +5,13 @@
 import csv
 import io
 from typing import Dict, List, Optional, Union
-from flask import render_template, Blueprint, request, redirect, url_for, Response, flash
-from werkzeug.wrappers import Response as WerkzeugResponse
-from matplotlib import pyplot as plt
+
+import matplotlib.pyplot as plt
 from matplotlib.cm import get_cmap
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
+from flask import render_template, Blueprint, request, redirect, url_for, Response, flash
+from werkzeug.wrappers import Response as WerkzeugResponse
 
 from src import config
 from src.utils import (
@@ -34,14 +35,14 @@ def filter_by_category(filter_type: str, arguments: Dict[str, Optional[str]]) ->
     filtered_transactions = []
 
     if filter_type == 'date':
-        from_date = arguments['from_date']
-        to_date = arguments['to_date']
+        from_date = arguments.get('from_date')
+        to_date = arguments.get('to_date')
         if from_date is not None and to_date is not None:
             filtered_transactions = [transaction for transaction in transactions
                                      if from_date <= transaction.date <= to_date]
 
     elif filter_type == 'amount':
-        filter_amount = arguments['filter_amount']
+        filter_amount = arguments.get('filter_amount')
         if filter_amount is not None:
             try:
                 filter_amount_num = float(filter_amount)
@@ -51,7 +52,7 @@ def filter_by_category(filter_type: str, arguments: Dict[str, Optional[str]]) ->
                 flash('Invalid amount', 'danger')
 
     elif filter_type == 'category':
-        filter_category = arguments['filter_category']
+        filter_category = arguments.get('filter_category')
         if filter_category is not None:
             try:
                 filter_category_int = int(filter_category)
@@ -70,7 +71,7 @@ def report() -> str:
     :return: Rendered report template.
     """
     categories = get_categories()
-    filter_type = request.args['filter_type']
+    filter_type = request.args.get('filter_type')
 
     # Convert request.args (MultiDict) to a dictionary with Optional[str] values
     arguments: Dict[str, Optional[str]] = {key: request.args.get(key) for key in request.args}

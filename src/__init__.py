@@ -8,9 +8,12 @@ import importlib
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+import matplotlib
 
 from src import config
 from src.utils_api import load_default_currency
+
+matplotlib.use('Agg')
 
 db: SQLAlchemy = SQLAlchemy()
 
@@ -28,7 +31,6 @@ def create_app() -> Flask:
 
     db.init_app(app)
 
-    # from app.routes import create_blueprints
     blueprints_module = importlib.import_module('src.routes')
     for bp in blueprints_module.create_blueprints():
         app.register_blueprint(bp)

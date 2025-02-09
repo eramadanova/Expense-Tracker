@@ -9,8 +9,6 @@
 </div>
 
 <div class="container mt-4">
-
-    <!-- Форма за избор на тип филтър -->
     <form action="/report" method="GET">
         <label for="filter_type" class="form-label">Filter:</label>
         <select class="form-select" name="filter_type" onchange="this.form.submit()">
@@ -22,8 +20,6 @@
     </form>
 
     <br/>
-
-    <!-- Форма за въвеждане на критерии за филтриране -->
     <form action="/report" method="GET">
         <input type="hidden" name="filter_type" value="{{ request.args.get('filter_type') }}">
 
@@ -56,7 +52,6 @@
         <button type="submit" class="btn btn-primary mt-3">Apply Filter</button>
     </form>
 
-    <!-- Таблица с резултати -->
     <div class="table-responsive mt-4">
         <table class="table table-bordered">
             <thead class="table-dark">
@@ -80,7 +75,6 @@
         </table>
     </div>
 
-    <!-- Опции за експортиране -->
     <div class="mt-4">
         <h5>Export Options:</h5>
         <form action="/report-table" method="POST">
@@ -113,7 +107,7 @@
                     <option value="pie_income">Pie Chart Income</option>
                 </select>
 
-                <button type="submit" class="btn btn-success" style="white-space: nowrap;">New Button</button>
+                <button type="submit" class="btn btn-success" style="white-space: nowrap;">Generate Chart</button>
             </div>
         </form>
 

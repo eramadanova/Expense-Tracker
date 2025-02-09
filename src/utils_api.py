@@ -1,7 +1,7 @@
 """
-Utility functions for interacting with currency-related API.
-This module provides functions to fetch currency codes, exchange rates
-and manage default currency settings.
+    Utility functions for interacting with currency-related API.
+    This module provides functions to fetch currency codes, exchange rates
+    and manage default currency settings.
 """
 
 import os

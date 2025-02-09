@@ -1,5 +1,5 @@
 """
-Utility functions for database operations and currency handling.
+    Utility functions for database operations and currency handling.
 """
 
 from typing import List, Optional

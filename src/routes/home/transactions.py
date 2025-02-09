@@ -1,5 +1,5 @@
 """
-Handles transaction operations such as creation, updating and deletion.
+    Handles transaction operations such as creation, updating and deletion.
 """
 
 from flask import Blueprint, request, redirect, url_for, flash
@@ -11,7 +11,8 @@ from src.utils import (
     create_transaction,
     update_budget_expense,
     delete_budget_expense,
-    get_transaction_by_id
+    get_transaction_by_id,
+    get_category_by_id
 )
 from src import db
 from .validators import is_valid, validate_currency
@@ -43,8 +44,10 @@ def home_transaction() -> Response:
         budget_category = get_budget_by_category(int(transaction_category))
         add_budget_expense(budget_category, transaction_amount_num)
 
-        budget_all = get_budget_by_category(0)
-        add_budget_expense(budget_all, transaction_amount_num)
+        category = get_category_by_id(int(transaction_category))
+        if category is not None and category.category_type == 'expense':
+            budget_all = get_budget_by_category(0)
+            add_budget_expense(budget_all, transaction_amount_num)
 
         create_transaction(int(transaction_category),
                             transaction_description,
@@ -82,11 +85,14 @@ def home_update() -> Response:
 
         updated_amount_float = validate_currency(updated_currency, float(updated_amount))
 
-        budget_category = get_budget_by_category(int(updated_category))
-        update_budget_expense(budget_category, transaction.amount, updated_amount_float)
+        current_budget_category = get_budget_by_category(transaction.category_id)
+        new_budget_category = get_budget_by_category(int(updated_category))
+        update_budget_expense(current_budget_category, transaction.amount, 0)
+        update_budget_expense(new_budget_category, 0, updated_amount_float)
 
-        budget_all = get_budget_by_category(0)
-        update_budget_expense(budget_all, transaction.amount, updated_amount_float)
+        if transaction.category.category_type == 'expense':
+            budget_all = get_budget_by_category(0)
+            update_budget_expense(budget_all, transaction.amount, updated_amount_float)
 
         transaction.category_id = int(updated_category)
         transaction.description = updated_description
@@ -121,8 +127,9 @@ def home_delete() -> Response:
         budget_category = get_budget_by_category(transaction.category_id)
         delete_budget_expense(transaction, budget_category)
 
-        budget_all = get_budget_by_category(0)
-        delete_budget_expense(transaction, budget_all)
+        if transaction.category.category_type == 'expense':
+            budget_all = get_budget_by_category(0)
+            delete_budget_expense(transaction, budget_all)
 
         db.session.delete(transaction)
         db.session.commit()
