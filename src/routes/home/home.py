@@ -19,7 +19,7 @@ import src.config as config
 home_bp = Blueprint('home', __name__)
 
 @home_bp.route('/')
-def welcome():
+def welcome() -> str:
     """
     Render the welcome page.
 
@@ -28,7 +28,7 @@ def welcome():
     return render_template('welcome.html')
 
 @home_bp.route('/home', methods=['GET'])
-def home():
+def home() -> str:
     """
     Render the home page with financial data.
 

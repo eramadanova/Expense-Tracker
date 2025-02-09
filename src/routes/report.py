@@ -5,22 +5,24 @@
 import csv
 import io
 from flask import render_template, Blueprint, request, redirect, url_for, Response, flash
+from typing import Dict, List, Optional, Union
+from werkzeug.wrappers import Response as WerkzeugResponse
 from matplotlib import pyplot as plt
-from matplotlib.cm import get_cmap  # Updated to use get_cmap
+from matplotlib.cm import get_cmap
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
 import src.config as config
-
 from src.utils import (
     get_categories,
     get_transactions,
     get_transactions_by_type
 )
+from src.models import Transaction
 
 report_bp = Blueprint('report', __name__)
 
-def filter_by_category(filter_type, arguments: dict):
+def filter_by_category(filter_type: str, arguments: Dict[str, Optional[str]]) -> List[Transaction]:
     """
     Filters transactions based on the given criteria.
 
@@ -61,7 +63,7 @@ def filter_by_category(filter_type, arguments: dict):
     return filtered_transactions
 
 @report_bp.route('/report', methods=['GET'])
-def report():
+def report() -> str:
     """
     Renders the report page with transaction filters.
 
@@ -75,7 +77,7 @@ def report():
                            filtered_transactions=filtered_transactions,
                            default_currency=config.DEFAULT_CURRENCY)
 
-def generate_csv(transactions):
+def generate_csv(transactions: List[Transaction]) -> Response:
     """
     Generates a CSV file from transactions.
 
@@ -96,7 +98,7 @@ def generate_csv(transactions):
 
     return response
 
-def generate_pdf(transactions):
+def generate_pdf(transactions: List[Transaction]) -> Response:
     """
     Generates a PDF report of transactions.
 
@@ -140,7 +142,7 @@ def generate_pdf(transactions):
     response.headers['Content-Disposition'] = 'attachment; filename=report.pdf'
     return response
 
-def generate_pie_chart(filtered_transactions):
+def generate_pie_chart(filtered_transactions: List[Transaction]) -> Response:
     """
     Generates a pie chart for filtered transactions.
 
@@ -174,7 +176,7 @@ def generate_pie_chart(filtered_transactions):
 
     return response
 
-def get_filtered_transactions(filtered_transaction_ids_str):
+def get_filtered_transactions(filtered_transaction_ids_str: str) -> List[Transaction]:
     """
     Retrieves transactions based on a list of transaction IDs.
 
@@ -191,7 +193,7 @@ def get_filtered_transactions(filtered_transaction_ids_str):
             if transaction.id in filtered_transaction_ids]
 
 @report_bp.route('/report-table', methods=['POST'])
-def report_table():
+def report_table() -> Union[Response, WerkzeugResponse, str]:
     """
     Exports transactions as a PDF or CSV file based on user selection.
 
@@ -212,7 +214,7 @@ def report_table():
     return redirect(url_for('report.report'))
 
 @report_bp.route('/report-chart', methods=['POST'])
-def report_chart():
+def report_chart() -> Union[Response, WerkzeugResponse, str]:
     """
     Generates and returns a pie chart for either income or expense transactions.
 

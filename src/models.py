@@ -24,8 +24,8 @@ class Category(db.Model):
     name: Mapped[str] = mapped_column(String(30), unique=True, nullable=False)
     category_type: Mapped[str] = mapped_column(String(10), nullable=False)  # 'income' or 'expense'
 
-    transactions: Mapped[list['Transaction']] = relationship(back_populates='category', lazy=True)
-    budget: Mapped['Budget'] = relationship(back_populates='category')
+    transactions: Mapped[List['Transaction']] = relationship(back_populates='category', lazy=True)
+    budget: Mapped[Optional['Budget']] = relationship(back_populates='category')
 
     def __repr__(self) -> str:
         """
@@ -58,7 +58,7 @@ class Transaction(db.Model):
     """
     id: Mapped[int] = mapped_column(primary_key=True)
     category_id: Mapped[int] = mapped_column(ForeignKey('category.id'), nullable=False)
-    description: Mapped[str] = mapped_column(String(200))
+    description: Mapped[Optional[str]] = mapped_column(String(200))
     amount: Mapped[float] = mapped_column(nullable=False)
     date: Mapped[str] = mapped_column(nullable=False)
 
@@ -110,8 +110,8 @@ class Budget(db.Model):
         :return: A string describing the Budget.
         """
         return f"""Budget(
-        current_expense={self.current_expense},
-        max_expense={self.max_expense},
+        current_expense={self.current_budget},
+        max_expense={self.total_budget},
         )"""
 
     def __str__(self) -> str:
@@ -120,4 +120,4 @@ class Budget(db.Model):
 
         :return: A formatted string with budget details.
         """
-        return f"<Current_expense {self.current_expense}, Max_expense: {self.max_expense}>"
+        return f"<Current_expense {self.current_budget}, Max_expense: {self.total_budget}>"

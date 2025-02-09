@@ -2,7 +2,9 @@
     Defines budget-related routes for the Flask application.
 """
 
-from flask import render_template, Blueprint, request, redirect, url_for
+from flask import render_template, Blueprint, request, redirect, url_for, Response, flash
+from typing import Union
+from werkzeug.wrappers import Response as WerkzeugResponse
 
 from src.models import Budget, Transaction
 from src.utils import (
@@ -17,7 +19,7 @@ from .. import db
 budget_bp = Blueprint('budget', __name__)
 
 @budget_bp.route('/budget')
-def budget():
+def budget() -> str:
     """
     Renders the budget overview page.
 
@@ -29,7 +31,7 @@ def budget():
                            budgets=budgets, default_currency=config.DEFAULT_CURRENCY)
 
 @budget_bp.route('/budget-set', methods=['POST'])
-def budget_set():
+def budget_set() -> Union[Response, WerkzeugResponse]:
     """
     Handles setting or updating a budget for a specific category.
 
@@ -43,6 +45,13 @@ def budget_set():
         if category_id is None:
             category_id = 0
 
+        try:
+            category_id_int = int(category_id)
+            total_budget_float = float(total_budget) if total_budget is not None else 0.0
+        except ValueError:
+            flash('Invalid input values.', 'danger')
+            return redirect(url_for('budget.budget'))
+
         budget_category = get_budget_by_category(category_id)
         if budget_category is None:
             if category_id != 0:
@@ -50,11 +59,11 @@ def budget_set():
                     db.select(Transaction).filter_by(category_id=category_id)))
             else:
                 sum_amount = sum(el.amount for el in get_transactions())
-            new_budget = Budget(category_id=category_id,
+            new_budget = Budget(category_id=category_id_int,
                                 current_budget=sum_amount,
-                                total_budget=total_budget)
+                                total_budget=total_budget_float)
         else:
-            budget_category.total_budget = total_budget
+            budget_category.total_budget = total_budget_float
 
         if new_budget is not None:
             db.session.add(new_budget)

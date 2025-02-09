@@ -2,7 +2,9 @@
 Handles transaction operations such as creation, updating and deletion.
 """
 
-from flask import Blueprint, request, redirect, url_for, flash
+from flask import Blueprint, request, redirect, url_for, flash, Response
+from typing import Union
+from werkzeug.wrappers import Response as WerkzeugResponse
 
 from src.utils import (
     get_budget_by_category,
@@ -18,7 +20,7 @@ from .validators import is_valid, validate_currency
 transactions_bp = Blueprint('transactions', __name__)
 
 @transactions_bp.route('/home-transaction', methods=['POST'])
-def home_transaction():
+def home_transaction() -> Union[Response, WerkzeugResponse]:
     """
     Handles the creation of a new transaction.
 
@@ -56,7 +58,7 @@ def home_transaction():
 
 
 @transactions_bp.route('/home-update', methods=['POST'])
-def home_update():
+def home_update() -> Union[Response, WerkzeugResponse]:
     """
     Handles updating an existing transaction.
 
@@ -99,7 +101,7 @@ def home_update():
 
 
 @transactions_bp.route('/home-delete', methods=['POST'])
-def home_delete():
+def home_delete() -> Union[Response, WerkzeugResponse]:
     """
     Handles the deletion of a transaction.
 

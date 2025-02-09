@@ -2,8 +2,10 @@
     Defines settings-related routes for managing currency preferences.
 """
 
-from flask import render_template, Blueprint, request, redirect, url_for, flash
+from flask import render_template, Blueprint, request, redirect, url_for, flash, Response
 from requests.exceptions import HTTPError
+from typing import Union
+from werkzeug.wrappers import Response as WerkzeugResponse
 
 import src.config as config
 from src.utils import update_currency
@@ -17,7 +19,7 @@ from .. import db
 settings_bp = Blueprint('settings', __name__)
 
 @settings_bp.route('/settings')
-def settings():
+def settings() -> str:
     """
     Renders the settings page with available currency options.
 
@@ -31,7 +33,7 @@ def settings():
     )
 
 @settings_bp.route('/settings-save', methods=['POST'])
-def settings_save():
+def settings_save() -> Union[str, Response, WerkzeugResponse]:
     """
     Updates the default currency setting and fetches the exchange rate.
 

@@ -2,7 +2,9 @@
     Defines category-related routes for the Flask application.
 """
 
-from flask import render_template, Blueprint, request, flash, redirect, url_for
+from flask import render_template, Blueprint, request, flash, redirect, url_for, Response
+from typing import List, Optional, Union
+from werkzeug.wrappers import Response as WerkzeugResponse
 
 from src.utils import (
     get_categories_by_type,
@@ -15,7 +17,7 @@ from .. import db
 categories_bp = Blueprint('categories', __name__)
 
 @categories_bp.route('/categories', methods=['GET'])
-def categories():
+def categories() -> str:
     """
     Renders the categories page with a list of income and expense categories.
 
@@ -28,7 +30,7 @@ def categories():
                            income_categories=income_categories)
 
 @categories_bp.route('/categories-add', methods=['POST'])
-def categories_add():
+def categories_add() -> Union[Response, WerkzeugResponse]:
     """
     Handles adding a new category based on user input.
 
@@ -63,7 +65,7 @@ def categories_add():
     return redirect(url_for('categories.categories'))
 
 @categories_bp.route('/categories-update', methods=['POST'])
-def categories_update():
+def categories_update() -> Union[Response, WerkzeugResponse]:
     """
     Handles updating an existing category's name.
 
@@ -90,7 +92,7 @@ def categories_update():
     return redirect(url_for('categories.categories'))
 
 @categories_bp.route('/categories-delete', methods=['POST'])
-def categories_delete():
+def categories_delete() -> Union[Response, WerkzeugResponse]:
     """
     Handles deleting a category along with its related transactions and budgets.
 

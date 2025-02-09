@@ -14,7 +14,7 @@ from src.utils_api import load_default_currency
 
 db = SQLAlchemy()
 
-def create_app():
+def create_app() -> Flask:
     """
     Creates and configures a Flask application.
 
