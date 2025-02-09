@@ -8,11 +8,12 @@ import dotenv
 
 dotenv.load_dotenv()
 
-API_KEY = os.getenv("API_KEY")
+API_KEY = os.getenv('API_KEY')
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 if not API_KEY:
-    raise ValueError("No API key provided!")
+    raise ValueError('No API key provided!')
 
-BASE_URL = f"https://v6.exchangerate-api.com/v6/{API_KEY}"
+BASE_URL = f'https://v6.exchangerate-api.com/v6/{API_KEY}'
 
 DEFAULT_CURRENCY = ''

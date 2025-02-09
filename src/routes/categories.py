@@ -2,9 +2,8 @@
     Defines category-related routes for the Flask application.
 """
 
-from flask import render_template, Blueprint, request, flash, redirect, url_for, Response
-from typing import List, Optional, Union
-from werkzeug.wrappers import Response as WerkzeugResponse
+from flask import render_template, Blueprint, request, flash, redirect, url_for
+from werkzeug.wrappers import Response
 
 from src.utils import (
     get_categories_by_type,
@@ -30,15 +29,15 @@ def categories() -> str:
                            income_categories=income_categories)
 
 @categories_bp.route('/categories-add', methods=['POST'])
-def categories_add() -> Union[Response, WerkzeugResponse]:
+def categories_add() -> Response:
     """
     Handles adding a new category based on user input.
 
     :return: Redirects to the categories page after processing the request.
     """
     if request.method == 'POST':
-        category_type = request.form['category_type']
-        name = request.form['category_name']
+        category_type = request.form['category_type'].strip()
+        name = request.form['category_name'].strip()
 
         if category_type not in ('income', 'expense'):
             flash('Invalid category type.', 'danger')
@@ -65,14 +64,14 @@ def categories_add() -> Union[Response, WerkzeugResponse]:
     return redirect(url_for('categories.categories'))
 
 @categories_bp.route('/categories-update', methods=['POST'])
-def categories_update() -> Union[Response, WerkzeugResponse]:
+def categories_update() -> Response:
     """
     Handles updating an existing category's name.
 
     :return: Redirects to the categories page after processing the update.
     """
     if request.method == 'POST':
-        category_id = request.form['category_id']
+        category_id = request.form['category_id'].strip()
         updated_name = request.form['update_category_name'].strip()
 
         existing_category = get_category_by_name(updated_name)
@@ -80,7 +79,7 @@ def categories_update() -> Union[Response, WerkzeugResponse]:
             flash('Category with this name already exists.', 'danger')
             return redirect(url_for('categories.categories'))
 
-        category = get_category_by_id(category_id)
+        category = get_category_by_id(int(category_id))
         if category is None:
             flash('Category not found.', 'danger')
             return redirect(url_for('categories.categories'))
@@ -92,16 +91,16 @@ def categories_update() -> Union[Response, WerkzeugResponse]:
     return redirect(url_for('categories.categories'))
 
 @categories_bp.route('/categories-delete', methods=['POST'])
-def categories_delete() -> Union[Response, WerkzeugResponse]:
+def categories_delete() -> Response:
     """
     Handles deleting a category along with its related transactions and budgets.
 
     :return: Redirects to the categories page after deletion.
     """
     if request.method == 'POST':
-        category_id = request.form['category_id']
+        category_id = request.form['category_id'].strip()
 
-        category = get_category_by_id(category_id)
+        category = get_category_by_id(int(category_id))
         if category is None:
             flash('Category not found.', 'danger')
             return redirect(url_for('categories.categories'))

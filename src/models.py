@@ -33,7 +33,7 @@ class Category(db.Model):
 
         :return: A string describing the Category.
         """
-        return f"Category(name={self.name}, category_type={self.category_type})"
+        return f'Category(name={self.name}, category_type={self.category_type})'
 
     def __str__(self) -> str:
         """
@@ -41,7 +41,7 @@ class Category(db.Model):
 
         :return: A formatted string with category details.
         """
-        return f"<Category {self.name}, Type: {self.category_type}>"
+        return f'<Category {self.name}, Type: {self.category_type}>'
 
 
 class Transaction(db.Model):
@@ -83,7 +83,7 @@ class Transaction(db.Model):
 
         :return: A formatted string with transaction details.
         """
-        return f"<Transaction {self.description}, Amount: {self.amount}, Date: {self.date}>"
+        return f'<Transaction {self.description}, Amount: {self.amount}, Date: {self.date}>'
 
 class Budget(db.Model):
     """
@@ -120,4 +120,4 @@ class Budget(db.Model):
 
         :return: A formatted string with budget details.
         """
-        return f"<Current_expense {self.current_budget}, Max_expense: {self.total_budget}>"
+        return f'<Current_expense {self.current_budget}, Max_expense: {self.total_budget}>'

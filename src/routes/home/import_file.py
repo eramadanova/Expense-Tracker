@@ -4,10 +4,8 @@ Validates file format, processes transactions and updates budgets.
 """
 
 import pandas as pd
-
-from flask import Blueprint, request, redirect, url_for, flash, Response
-from typing import Union
-from werkzeug.wrappers import Response as WerkzeugResponse
+from flask import Blueprint, request, redirect, url_for, flash
+from werkzeug.wrappers import Response
 from werkzeug.datastructures import FileStorage
 
 from src import db
@@ -17,7 +15,7 @@ from .validators import validate_file, validate_columns, process_transaction
 import_bp = Blueprint('import_export', __name__)
 
 @import_bp.route('/home-import', methods=['POST'])
-def home_import() -> Union[Response, WerkzeugResponse]:
+def home_import() -> Response:
     """
     Handle CSV file import for transactions.
 

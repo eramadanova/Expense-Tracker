@@ -4,15 +4,15 @@
 
 import csv
 import io
-from flask import render_template, Blueprint, request, redirect, url_for, Response, flash
 from typing import Dict, List, Optional, Union
+from flask import render_template, Blueprint, request, redirect, url_for, Response, flash
 from werkzeug.wrappers import Response as WerkzeugResponse
 from matplotlib import pyplot as plt
 from matplotlib.cm import get_cmap
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-import src.config as config
+from src import config
 from src.utils import (
     get_categories,
     get_transactions,
@@ -44,9 +44,9 @@ def filter_by_category(filter_type: str, arguments: Dict[str, Optional[str]]) ->
         filter_amount = arguments['filter_amount']
         if filter_amount is not None:
             try:
-                filter_amount = float(filter_amount)
+                filter_amount_num = float(filter_amount)
                 filtered_transactions = [ transaction for transaction in transactions
-                                         if float(f"{transaction.amount:.2f}") == filter_amount]
+                                       if float(f'{transaction.amount:.2f}') == filter_amount_num]
             except ValueError:
                 flash('Invalid amount', 'danger')
 
@@ -54,9 +54,9 @@ def filter_by_category(filter_type: str, arguments: Dict[str, Optional[str]]) ->
         filter_category = arguments['filter_category']
         if filter_category is not None:
             try:
-                filter_category = int(filter_category)
+                filter_category_int = int(filter_category)
                 filtered_transactions = [transaction for transaction in transactions
-                                         if transaction.category_id == filter_category]
+                                         if transaction.category_id == filter_category_int]
             except ValueError:
                 pass
 
@@ -70,8 +70,11 @@ def report() -> str:
     :return: Rendered report template.
     """
     categories = get_categories()
-    filter_type = request.args.get('filter_type')
-    filtered_transactions = filter_by_category(filter_type, request.args)
+    filter_type = request.args['filter_type']
+
+    # Convert request.args (MultiDict) to a dictionary with Optional[str] values
+    arguments: Dict[str, Optional[str]] = {key: request.args.get(key) for key in request.args}
+    filtered_transactions = filter_by_category(filter_type, arguments)
     return render_template('report.html',
                            categories=categories,
                            filtered_transactions=filtered_transactions,
@@ -91,9 +94,9 @@ def generate_csv(transactions: List[Transaction]) -> Response:
 
     for transaction in transactions:
         writer.writerow([transaction.date, transaction.category.name, transaction.description,
-                         f"{transaction.amount:.2f}", config.DEFAULT_CURRENCY])
+                         f'{transaction.amount:.2f}', config.DEFAULT_CURRENCY])
 
-    response = Response(output.getvalue(), mimetype="text/csv")
+    response = Response(output.getvalue(), mimetype='text/csv')
     response.headers['Content-Disposition'] = 'attachment; filename=report.csv'
 
     return response
@@ -114,7 +117,7 @@ def generate_pdf(transactions: List[Transaction]) -> Response:
     pdf.drawString(230, y_position, 'Transaction Report')
     y_position -= 30
 
-    pdf.setFont("Helvetica-Bold", 10)
+    pdf.setFont('Helvetica-Bold', 10)
     pdf.drawString(50, y_position, 'Date')
     pdf.drawString(130, y_position, 'Category')
     pdf.drawString(250, y_position, 'Description')
@@ -122,7 +125,7 @@ def generate_pdf(transactions: List[Transaction]) -> Response:
     pdf.drawString(500, y_position, 'Currency')
     y_position -= 20
 
-    pdf.setFont("Helvetica", 10)
+    pdf.setFont('Helvetica', 10)
     for transaction in transactions:
         if y_position < 50:
             pdf.showPage()
@@ -130,8 +133,8 @@ def generate_pdf(transactions: List[Transaction]) -> Response:
 
         pdf.drawString(50, y_position, str(transaction.date))
         pdf.drawString(130, y_position, transaction.category.name)
-        pdf.drawString(250, y_position, transaction.description)
-        pdf.drawString(400, y_position, f"{transaction.amount:.2f}")
+        pdf.drawString(250, y_position, str(transaction.description))
+        pdf.drawString(400, y_position, f'{transaction.amount:.2f}')
         pdf.drawString(500, y_position, config.DEFAULT_CURRENCY)
         y_position -= 20
 
@@ -149,7 +152,7 @@ def generate_pie_chart(filtered_transactions: List[Transaction]) -> Response:
     :param filtered_transactions: List of transactions for the chart.
     :return: Flask response containing the pie chart image.
     """
-    category_totals = {}
+    category_totals: Dict[str, float] = {}
 
     for transaction in filtered_transactions:
         category_name = transaction.category.name
@@ -158,9 +161,9 @@ def generate_pie_chart(filtered_transactions: List[Transaction]) -> Response:
         else:
             category_totals[category_name] = transaction.amount
 
-    labels = category_totals.keys()
-    sizes = category_totals.values()
-    colors = get_cmap('Paired')(range(len(labels)))
+    labels = list(category_totals.keys())
+    sizes = list(category_totals.values())
+    colors = get_cmap('Paired')(range(len(labels))).tolist()
 
     plt.clf()
     plt.figure(figsize=(6, 6))
@@ -193,16 +196,16 @@ def get_filtered_transactions(filtered_transaction_ids_str: str) -> List[Transac
             if transaction.id in filtered_transaction_ids]
 
 @report_bp.route('/report-table', methods=['POST'])
-def report_table() -> Union[Response, WerkzeugResponse, str]:
+def report_table() -> Union[WerkzeugResponse, str]:
     """
     Exports transactions as a PDF or CSV file based on user selection.
 
     :return: Flask response with the exported file.
     """
     if request.method == 'POST':
-        filtered_transaction_ids_str = request.form['filtered_transaction_ids']
+        filtered_transaction_ids_str = request.form['filtered_transaction_ids'].strip()
         filtered_transactions = get_filtered_transactions(filtered_transaction_ids_str)
-        export_type = request.form['export_type']
+        export_type = request.form['export_type'].strip()
 
         if export_type == 'pdf':
             return generate_pdf(filtered_transactions)
@@ -214,7 +217,7 @@ def report_table() -> Union[Response, WerkzeugResponse, str]:
     return redirect(url_for('report.report'))
 
 @report_bp.route('/report-chart', methods=['POST'])
-def report_chart() -> Union[Response, WerkzeugResponse, str]:
+def report_chart() -> Union[WerkzeugResponse, str]:
     """
     Generates and returns a pie chart for either income or expense transactions.
 

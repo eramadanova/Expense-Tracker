@@ -17,7 +17,7 @@ def get_currency_codes() -> List[str]:
 
     :return: A list of supported currency codes.
     """
-    url = f"{BASE_URL}/codes"
+    url = f'{BASE_URL}/codes'
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
@@ -34,7 +34,7 @@ def get_exchange_rate(from_currency: str, to_currency: str) -> float:
     :param to_currency: The target currency.
     :return: The exchange rate.
     """
-    url = f"{BASE_URL}/pair/{from_currency}/{to_currency}"
+    url = f'{BASE_URL}/pair/{from_currency}/{to_currency}'
     try:
         response = requests.get(url, timeout=10)
         response.raise_for_status()

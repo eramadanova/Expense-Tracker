@@ -75,7 +75,8 @@ def get_transaction_by_id(transaction_id: int) -> Optional[Transaction]:
             ).scalar_one_or_none()
 
 
-def get_transactions_by_type(transactions: List[Transaction], category_type:str) -> List[Transaction]:
+def get_transactions_by_type(transactions: List[Transaction],
+                            category_type:str) -> List[Transaction]:
     """
     Filters transactions based on the category type (e.g., 'expense' or 'income').
 
@@ -136,7 +137,9 @@ def add_budget_expense(budget: Optional[Budget], transaction_amount: float) -> N
         budget.current_budget += transaction_amount
         db.session.commit()
 
-def update_budget_expense(budget: Optional[Budget], current_amount: float, updated_amount: float) -> None:
+def update_budget_expense(budget: Optional[Budget],
+                          current_amount: float,
+                          updated_amount: float) -> None:
     """
     Update an expense in the budget.
 

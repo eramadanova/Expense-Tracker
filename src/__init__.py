@@ -9,10 +9,10 @@ import importlib
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-import src.config as config
+from src import config
 from src.utils_api import load_default_currency
 
-db = SQLAlchemy()
+db: SQLAlchemy = SQLAlchemy()
 
 def create_app() -> Flask:
     """
@@ -21,7 +21,7 @@ def create_app() -> Flask:
     :return: The initialized Flask application instance.
     """
     app = Flask(__name__)
-    app.secret_key = 'asdfvm kfkmvkemd n'
+    app.secret_key = config.SECRET_KEY
     app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///my_database.db'
 
     app.config.from_pyfile('../src/config.py')

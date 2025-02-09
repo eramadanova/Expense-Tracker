@@ -14,7 +14,7 @@ from src.utils import (
     get_categories
 )
 from src.utils_api import get_currency_codes
-import src.config as config
+from src import config
 
 home_bp = Blueprint('home', __name__)
 

@@ -2,12 +2,12 @@
     Defines settings-related routes for managing currency preferences.
 """
 
-from flask import render_template, Blueprint, request, redirect, url_for, flash, Response
-from requests.exceptions import HTTPError
 from typing import Union
-from werkzeug.wrappers import Response as WerkzeugResponse
+from flask import render_template, Blueprint, request, redirect, url_for, flash
+from requests.exceptions import HTTPError
+from werkzeug.wrappers import Response
 
-import src.config as config
+from src import config
 from src.utils import update_currency
 from src.utils_api import (
     get_currency_codes,
@@ -33,7 +33,7 @@ def settings() -> str:
     )
 
 @settings_bp.route('/settings-save', methods=['POST'])
-def settings_save() -> Union[str, Response, WerkzeugResponse]:
+def settings_save() -> Union[str, Response]:
     """
     Updates the default currency setting and fetches the exchange rate.
 
@@ -44,7 +44,7 @@ def settings_save() -> Union[str, Response, WerkzeugResponse]:
     """
     if request.method == 'POST':
         from_currency = config.DEFAULT_CURRENCY
-        config.DEFAULT_CURRENCY = request.form['default_currency']
+        config.DEFAULT_CURRENCY = request.form['default_currency'].strip()
 
         save_default_currency(config.DEFAULT_CURRENCY)
 

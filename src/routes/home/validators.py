@@ -3,14 +3,14 @@ Validation utilities for transaction data processing.
 """
 
 from datetime import datetime
+from typing import Dict, Optional
 
 import pandas as pd
 from flask import flash
-from typing import Dict, Optional
 from werkzeug.datastructures import FileStorage
 
 from src.models import Transaction
-import src.config as config
+from src import config
 from src.utils import get_category_by_name
 from src.utils_api import get_currency_codes, get_exchange_rate
 
@@ -37,7 +37,7 @@ def validate_file(file: FileStorage) -> bool:
     :param file: The uploaded file.
     :return: True if the file is a valid CSV, False otherwise.
     """
-    if not file or not file.filename == '':
+    if not file or file.filename == '':
         flash('No file selected!', 'danger')
         return False
     if not file.filename.endswith('.csv'):

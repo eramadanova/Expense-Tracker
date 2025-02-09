@@ -2,9 +2,8 @@
 Handles transaction operations such as creation, updating and deletion.
 """
 
-from flask import Blueprint, request, redirect, url_for, flash, Response
-from typing import Union
-from werkzeug.wrappers import Response as WerkzeugResponse
+from flask import Blueprint, request, redirect, url_for, flash
+from werkzeug.wrappers import Response
 
 from src.utils import (
     get_budget_by_category,
@@ -20,7 +19,7 @@ from .validators import is_valid, validate_currency
 transactions_bp = Blueprint('transactions', __name__)
 
 @transactions_bp.route('/home-transaction', methods=['POST'])
-def home_transaction() -> Union[Response, WerkzeugResponse]:
+def home_transaction() -> Response:
     """
     Handles the creation of a new transaction.
 
@@ -30,26 +29,26 @@ def home_transaction() -> Union[Response, WerkzeugResponse]:
     :return: A redirect to the home page.
     """
     if request.method == 'POST':
-        transaction_date = request.form.get('transaction_date')
-        transaction_category = request.form.get('transaction_category')
-        transaction_amount = request.form.get('transaction_amount')
-        transaction_description = request.form.get('transaction_description').strip()
-        transaction_currency = request.form.get('transaction_currency')
+        transaction_date = request.form['transaction_date'].strip()
+        transaction_category = request.form['transaction_category'].strip()
+        transaction_amount = request.form['transaction_amount'].strip()
+        transaction_description = request.form['transaction_description'].strip()
+        transaction_currency = request.form['transaction_currency'].strip()
 
         if not is_valid(transaction_category, transaction_amount):
             return redirect(url_for('home.home'))
 
-        transaction_amount = validate_currency(transaction_currency, transaction_amount)
+        transaction_amount_num = validate_currency(transaction_currency, float(transaction_amount))
 
-        budget_category = get_budget_by_category(transaction_category)
-        add_budget_expense(budget_category, transaction_amount)
+        budget_category = get_budget_by_category(int(transaction_category))
+        add_budget_expense(budget_category, transaction_amount_num)
 
         budget_all = get_budget_by_category(0)
-        add_budget_expense(budget_all, transaction_amount)
+        add_budget_expense(budget_all, transaction_amount_num)
 
-        create_transaction(transaction_category,
+        create_transaction(int(transaction_category),
                             transaction_description,
-                            transaction_amount,
+                            transaction_amount_num,
                             transaction_date)
 
         return redirect(url_for('home.home'))
@@ -58,7 +57,7 @@ def home_transaction() -> Union[Response, WerkzeugResponse]:
 
 
 @transactions_bp.route('/home-update', methods=['POST'])
-def home_update() -> Union[Response, WerkzeugResponse]:
+def home_update() -> Response:
     """
     Handles updating an existing transaction.
 
@@ -68,30 +67,30 @@ def home_update() -> Union[Response, WerkzeugResponse]:
     :return: A redirect to the home page.
     """
     if request.method == 'POST':
-        transaction_id = request.form.get('transaction_id')
-        updated_category = request.form.get('transaction_category')
-        updated_description = request.form.get('transaction_description').strip()
-        updated_amount = request.form.get('transaction_amount')
-        updated_date = request.form.get('transaction_date')
-        updated_currency = request.form.get('transaction_currency')
+        transaction_id = request.form['transaction_id'].strip()
+        updated_category = request.form['transaction_category'].strip()
+        updated_description = request.form['transaction_description'].strip()
+        updated_amount = request.form['transaction_amount'].strip()
+        updated_date = request.form['transaction_date'].strip()
+        updated_currency = request.form['transaction_currency'].strip()
 
-        transaction = get_transaction_by_id(transaction_id)
+        transaction = get_transaction_by_id(int(transaction_id))
 
         if not transaction or not is_valid(updated_category, updated_amount):
             flash('Transaction not found.', 'error')
             return redirect(url_for('home.home'))
 
-        updated_amount = validate_currency(updated_currency, float(updated_amount))
+        updated_amount_float = validate_currency(updated_currency, float(updated_amount))
 
-        budget_category = get_budget_by_category(updated_category)
-        update_budget_expense(budget_category, transaction.amount, updated_amount)
+        budget_category = get_budget_by_category(int(updated_category))
+        update_budget_expense(budget_category, transaction.amount, updated_amount_float)
 
         budget_all = get_budget_by_category(0)
-        update_budget_expense(budget_all, transaction.amount, updated_amount)
+        update_budget_expense(budget_all, transaction.amount, updated_amount_float)
 
-        transaction.category_id = updated_category
+        transaction.category_id = int(updated_category)
         transaction.description = updated_description
-        transaction.amount = updated_amount
+        transaction.amount = updated_amount_float
         transaction.date = updated_date
 
         db.session.commit()
@@ -101,7 +100,7 @@ def home_update() -> Union[Response, WerkzeugResponse]:
 
 
 @transactions_bp.route('/home-delete', methods=['POST'])
-def home_delete() -> Union[Response, WerkzeugResponse]:
+def home_delete() -> Response:
     """
     Handles the deletion of a transaction.
 
@@ -111,9 +110,13 @@ def home_delete() -> Union[Response, WerkzeugResponse]:
     :return: A redirect to the home page.
     """
     if request.method == 'POST':
-        transaction_id = request.form.get('transaction_id')
+        transaction_id = request.form['transaction_id'].strip()
 
-        transaction = get_transaction_by_id(transaction_id)
+        transaction = get_transaction_by_id(int(transaction_id))
+
+        if transaction is None:
+            flash('Transaction not found.', 'error')
+            return redirect(url_for('home.home'))
 
         budget_category = get_budget_by_category(transaction.category_id)
         delete_budget_expense(transaction, budget_category)
